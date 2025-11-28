@@ -1,5 +1,6 @@
-import Vector from './vector.js';
-import { Ball, Box } from './entities.js';
+import Vector from './utils/vector.js';
+import { Ball } from './entities/ball.js';
+import { Box } from './entities/box.js';
 
 export const INIT = 'INIT';
 export const PAUSE = 'PAUSE';
@@ -10,9 +11,9 @@ const config = {
   initialSpeed: 15, // the ball's speed after serving
   maxSpeed: 30, // the ball's max speed
   hitForce: 1.05, // force to speed up the ball when it hits the paddle
-  wallFriction: .1, // friction to slow down the when it hits the wall
+  wallFriction: .1, // friction to slow down the ball when it hits the wall
   paddleMaxSpeed: 10, // max speed of the paddle
-  paddleSpeedTransfer: .3, // percent of the paddle's speed transfered to the ball after a stroke
+  paddleSpeedTransfer: .5, // percent of the paddle's speed transfered to the ball after a stroke
 }
 
 const state = {
@@ -20,13 +21,14 @@ const state = {
   score: [0, 0],
   serving: null,
   paused: false,
+  processing: 0,
 }
 
 const entities = [];
 
 const controls = {
-  dpad1: Vector.create(0, 0),
-  dpad2: Vector.create(0, 0),
+  dpad1: new Vector(),
+  dpad2: new Vector(),
 };
 
 const debug = () => {
@@ -85,7 +87,7 @@ const updateGame = (elapsedTime = 0) => {
   const next = ball.position.add(ball.velocity);
 
   // # Paddle positions
-  entities[1].velocity.y = controls.dpad1.y * config.paddleMaxSpeed;
+  // entities[1].velocity.y = controls.dpad1.y * config.paddleMaxSpeed;
   entities[2].velocity.y = controls.dpad2.y * config.paddleMaxSpeed;
   entities[1].position.addTo(entities[1].velocity);
   entities[2].position.addTo(entities[2].velocity);
@@ -108,46 +110,20 @@ const updateGame = (elapsedTime = 0) => {
 
   // # Paddle bouncing
   // Speed up the ball when hit the paddle
-  const inersect = (p0, p1, p2, p3, ray) => {
-    const A1 = p1.y - p0.y;
-    const B1 = p0.x - p1.x;
-    const C1 = A1 * p0.x + B1 * p0.y;
-    const A2 = p3.y - p2.y;
-    const B2 = p2.x - p3.x;
-    const C2 = A2 * p2.x + B2 * p2.y;
-    const denominator = A1 * B2 - A2 * B1;
-
-    if (denominator === 0) {
-      return null;
-    }
-
-    const intersetX = (B2 * C1 - B1 * C2) / denominator;
-    const intersetY = (A1 * C2 - A2 * C1) / denominator;
-    const rx0 = (intersetX - p0.x) / (p1.x - p0.x);
-    const ry0 = (intersetY - p0.y) / (p1.y - p0.y);
-    const rx1 = (intersetX - p2.x) / (p3.x - p2.x);
-    const ry1 = (intersetY - p2.y) / (p3.y - p2.y);
-
-    if (ray) {
-      return { x: intersetX, y: intersetY }
-    }
-
-    if (((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) &&
-        ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
-      return { x: intersetX, y: intersetY }
-    }
-  };
-
   const rect1 = entities[1].getRect();
   const rect2 = entities[2].getRect();
   rect1.x = rect1.x + rect1.width;
   const inersectPoint1 = inersect(ball.position, next, rect1, { x: rect1.x, y: rect1.y + rect1.height });
   const inersectPoint2 = inersect(ball.position, next, rect2, { x: rect2.x, y: rect2.y + rect2.height });
 
-  const i = inersect(ball.position, next, { x: 0, y: 0 }, { x: 0, y: ctx.canvas.height }, true);
-  if (entities[1].position.y > i.y + 10) entities[1].velocity.y = -10;
-  else if (entities[1].position.y < i.y - 10) entities[1].velocity.y = 10;
-  entities[1].position.addTo(entities[1].velocity);
+  if (state.processing % 10 === 0) {
+      const i = inersect(ball.position, next, { x: 0, y: 0 }, { x: 0, y: ctx.canvas.height }, true);
+      if (entities[1].position.y > i.y + 10) entities[1].velocity.y = -10;
+      else if (entities[1].position.y < i.y - 10) entities[1].velocity.y = 10;
+      else entities[1].velocity.y = 0;
+  }
+  state.processing++;
+  // entities[1].position.addTo(entities[1].velocity);
 
   if (inersectPoint1) {
     ball.position.x = inersectPoint1.x + ball.r;
@@ -219,9 +195,9 @@ const init = ({ canvas }) => {
   state.ctx.imageSmoothingEnabled = false;
   state.isPaused = true;
 
-  entities[0] = Ball.create({ position: Vector.create(700, 400), r: 10 });
-  entities[1] = Box.create({ position: Vector.create(20, 400), width: 20, height: 100 });
-  entities[2] = Box.create({ position: Vector.create(1380, 400), width: 20, height: 100 });
+  entities[0] = Ball.create({ position: new Vector(700, 400), r: 10 });
+  entities[1] = Box.create({ position: new Vector(20, 400), width: 20, height: 100 });
+  entities[2] = Box.create({ position: new Vector(1380, 400), width: 20, height: 100 });
 
   serve({ player: 1 })
   requestAnimationFrame(render);

@@ -30,26 +30,26 @@ export const intersectAABB = (a, b, state) => {
   }
 
   if (a.bottom >= b.top && a.ob < b.ot) {
-    a.vx = b.vx;
+    a.vx = b.vx || a.vx;
     a.vy = b.vy;
     a.bottom = b.top - 0.001;
     a.top = a.bottom - a.height;
     state.isJumping = false;
   } 
-  else if (a.top <= b.bottom && a.ot > b.ob) {
-    // a.vx = b.vx;
-    a.vy = b.vy;
-    a.top = b.bottom + 0.001;
-    a.bottom = a.top + a.height;
-  }
-  else if (a.left <= b.right && a.ol > b.or) {
-    a.vx = b.vx;
-    a.left = b.right + 0.001;
-    a.right = a.left + a.width;
-  }
-  else if (a.right >= b.left && a.or < b.ol) {
-    a.vx = b.vx;
-    a.right = b.left - 0.001;
-    a.left = a.right - a.width;
-  }
+  // else if (a.top <= b.bottom && a.ot > b.ob) {
+  //   // a.vx = b.vx;
+  //   a.vy = b.vy;
+  //   a.top = b.bottom + 0.001;
+  //   a.bottom = a.top + a.height;
+  // }
+  // else if (a.left <= b.right && a.ol > b.or) {
+  //   a.vx = b.vx;
+  //   a.left = b.right + 0.001;
+  //   a.right = a.left + a.width;
+  // }
+  // else if (a.right >= b.left && a.or < b.ol) {
+  //   a.vx = b.vx;
+  //   a.right = b.left - 0.001;
+  //   a.left = a.right - a.width;
+  // }
 };

@@ -14,7 +14,7 @@ const state = { isJumping: false }
 
 export const player = {
   update: (platforms) => {
-    // entitity.vx *= config.friction;
+    entitity.vx *= config.friction;
     entitity.vy += config.gravity;
 
     if (dpad.left) {

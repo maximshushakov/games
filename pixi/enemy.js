@@ -1,4 +1,5 @@
 import { intersectBullets } from './bullets.js';
+import { sound } from './sound.js';
 
 const enemies = [];
 const speed = 1;
@@ -60,7 +61,7 @@ export const createEnemyGroup = (spritesheet, x, y) => {
 export const updateEnemies = (app, elapsed, delta, spritesheetExplosion) => {
   enemies.filter(enemy => enemy.visible).forEach(container => {
     if (!container) return;
-    container.y += speed * delta;
+    container.y += Math.cos(elapsed/100.0) + speed * delta;
     container.x = container.x + Math.cos(elapsed/50.0) * 1.0;
     
     const rect = new PIXI.Rectangle(container.x + hitArea.x, container.y + hitArea.y, hitArea.width, hitArea.height);
@@ -71,6 +72,7 @@ export const updateEnemies = (app, elapsed, delta, spritesheetExplosion) => {
       const sprite = createExplosion(spritesheetExplosion, intersectBullet.x, intersectBullet.y);
       sprite.play();
       app.stage.addChild(sprite);
+      sound.play();
     }
   })
 }

@@ -4,7 +4,8 @@ import { createEnemy, createEnemyGroup, updateEnemies } from "./enemy.js";
 import { updateBullets } from "./bullets.js";
 
  const init = async () => {
-  const app = new PIXI.Application({ width: 640, height: 1090 });
+  console.log(window.innerWidth)
+  const app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight }) // new PIXI.Application({ width: 640, height: 1090 });
   app.renderer.backgroundColor = "0x02020F";
 
   const atlasData = {
@@ -127,7 +128,7 @@ import { updateBullets } from "./bullets.js";
     meta: {
       image: 'assets/explosion.png',
       format: 'RGBA8888',
-      size: { w: 640, h: 640 },
+      size: { w: 651, h: 650 },
       scale: 1
     },
     animations: {
@@ -191,17 +192,25 @@ import { updateBullets } from "./bullets.js";
     speeds[i] = 0.3 + Math.random();
   }
 
-  const filter = new PIXI.filters.CRTFilter();
-  // filter.verticalLine = true;
-  filter.lineWidth = 0.1;
-  filter.noise = 0.3;
-  filter.noiseSize = 0.1;
-  app.stage.filters = [filter];
+  // const filter = new PIXI.filters.CRTFilter();
+  // // filter.verticalLine = true;
+  // filter.lineWidth = 0.1;
+  // filter.noise = 0.3;
+  // filter.noiseSize = 0.1;
+  // app.stage.filters = [filter];
   
+  let last = 0;
   let elapsed = 0.0;
+  let counter = 0;
   app.ticker.add((delta) => {
     elapsed += delta;
-    filter.seed = Math.random();
+    if (elapsed - last > 60) {
+      last = elapsed;
+      counter++
+      console.log(counter);
+    }
+
+    // filter.seed = Math.random();
     // filter.time += 0.1;
     for (var i = 0; i < 100; ++i) {
       var s = stars[i];
@@ -217,4 +226,3 @@ import { updateBullets } from "./bullets.js";
  }
 
 init().then(app => document.body.appendChild(app.view));
-      

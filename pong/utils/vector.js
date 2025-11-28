@@ -2,11 +2,9 @@ export default class Vector {
   x = 0;
   y = 0;
 
-  static create(x, y) {
-    const vector = new Vector();
-    vector.x = x;
-    vector.y = y;
-    return vector;
+  constructor(x, y) {
+    if (x) this.x = x;
+    if (y) this.y = y;
   }
 
   get angle() {
@@ -30,15 +28,15 @@ export default class Vector {
   }
 
   add(v2) {
-    return Vector.create(this.x + v2.x, this.y + v2.y);
+    return new Vector(this.x + v2.x, this.y + v2.y);
   }
 
   subtract(v2) {
-    return Vector.create(this.x - v2.x, this.y - v2.y);
+    return new Vector(this.x - v2.x, this.y - v2.y);
   }
 
   multiply(value) {
-    return Vector.create(this.x * value, this.y * value);
+    return new Vector(this.x * value, this.y * value);
   }
 
   addTo(v2) {

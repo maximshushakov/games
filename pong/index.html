@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
 
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="modulepreload" href="worker.js">
+    <link rel="modulepreload" href="game.js">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -27,8 +27,8 @@
   </div>
 
   <script type="module">
-    import Gamepad from './gamepad.js';
-    import { INIT, SCORE, PAUSE, CONTROLS_UPDATE } from './worker.js';
+    import Gamepad from './input/gamepad.js';
+    import { INIT, SCORE, PAUSE, CONTROLS_UPDATE } from './game.js';
 
     const config = {};
     const canvas = document.querySelector('canvas');
