@@ -13,4 +13,4 @@ Experimenting with canvas api, learning basics of game developement, building so
 [https://maximshushakov.github.io/games/platformer](https://maximshushakov.github.io/games/platformer)
 
 ### 4) Shoot'em all (in developement, pixi)
-[https://maximshushakov.github.io/games/platformer](https://maximshushakov.github.io/games/pixui
+[https://maximshushakov.github.io/games/pixi](https://maximshushakov.github.io/games/pixi)
